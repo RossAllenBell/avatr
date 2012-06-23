@@ -1,23 +1,11 @@
-<script type='text/javascript'>
-    if (!window.WebSocket && window.MozWebSocket)
-        window.WebSocket=window.MozWebSocket;
-    if (!window.WebSocket)
-        alert("WebSocket not supported by this browser");
-    
-    var wsURL = document.location.toString().replace('http://','ws://').replace('https://','wss://') + "ws";
-    console.log("Creating WS to: " + wsURL);
-    var webSocket = new WebSocket(wsURL);
-    
-    webSocket.onopen = function() {
-    	console.log("Connected.");
-    };
-    
-    webSocket.onmessage = function(message) {
-    	console.log("Message: " + message);
-    };
-    
-    webSocket.onclose = function(message) {
-    	console.log("Closed: " + message);
-    };
-    
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="js/avatr.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){new Avatr()});
 </script>
+</head>
+<body>
+</body>
+</html>
