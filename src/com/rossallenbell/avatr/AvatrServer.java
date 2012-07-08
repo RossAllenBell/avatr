@@ -7,8 +7,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 public class AvatrServer {
 	
-	public static void main(String[] args) throws Exception {
-	    
+	public static void main(String[] args) throws Exception {	    
         Server server = new Server(8080);
         
         ServletContextHandler handler = new ServletContextHandler();
@@ -24,8 +23,7 @@ public class AvatrServer {
         server.setHandler(handler);
         
         server.start();
-        server.join();
-        
+        server.join();        
     }
 
 }

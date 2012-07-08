@@ -1,0 +1,7 @@
+make canvas scale to window size
+make canvas react to window resize
+make websocket connection secure
+create users
+
+DONE:
+formalize message protocol
