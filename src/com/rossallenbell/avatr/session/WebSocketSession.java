@@ -17,8 +17,9 @@ public class WebSocketSession implements WebSocket.OnTextMessage {
     public WebSocketSession(AvatrWebSocketServlet awss, String userId) {
         this.wsServlet = awss;
         this.userId = userId;
-        this.x = 100;
-        this.y = 100;
+        //place the player in a random spot on the scene
+        this.x = (int) Math.round(Math.random() * 1600);
+        this.y = (int) Math.round(Math.random() * 900);
     }
     
     public Connection getConnection() {
