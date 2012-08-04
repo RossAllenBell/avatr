@@ -1,0 +1,57 @@
+<project name="avatr" default="all" basedir=".">
+
+	<path id="compile.classpath">
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement path="src/classes" />
+	</path>
+
+	<target name="clean">
+		<delete dir="build" quiet="true" />
+		<delete includeemptydirs="true" quiet="true" >
+			<fileset dir="dist" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="prepare">
+		<mkdir dir="src/classes" />
+		<mkdir dir="dist" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="src" destdir="src/classes" includes="**/*.java" includeantruntime="false">
+			<classpath refid="compile.classpath" />
+			<compilerarg value="-Xlint" />
+		</javac>
+		<copy todir="dist/lib">
+			<fileset dir="lib" />
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile">
+		<path id="cp.runtime">
+			<fileset dir="dist/">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+		<manifestclasspath property="manifest_cp" jarfile="dist/avatr.jar">
+			<classpath refid="cp.runtime" />
+		</manifestclasspath>
+		<jar jarfile="dist/avatr.jar">
+			<fileset dir="src/classes">
+				<include name="**/**" />
+			</fileset>
+			<fileset dir="src/com/rossallenbell/avatr/webapp">
+				<include name="**/**" />
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="com.rossallenbell.avatr.AvatrServer" />
+				<attribute name="Class-Path" value="${manifest_cp}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="all" depends="clean,jar" />
+
+</project>
