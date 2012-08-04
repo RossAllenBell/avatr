@@ -24,12 +24,15 @@
 			<classpath refid="compile.classpath" />
 			<compilerarg value="-Xlint" />
 		</javac>
-		<copy todir="dist/lib">
-			<fileset dir="lib" />
-		</copy>
 	</target>
 
 	<target name="jar" depends="compile">
+        <copy todir="dist/lib">
+            <fileset dir="lib" />
+        </copy>
+        <copy todir="dist/etc">
+            <fileset dir="etc" />
+        </copy>
 		<path id="cp.runtime">
 			<fileset dir="dist/">
 				<include name="**/*.jar" />
