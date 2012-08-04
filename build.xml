@@ -9,7 +9,7 @@
 
 	<target name="clean">
 		<delete dir="build" quiet="true" />
-		<delete includeemptydirs="true" quiet="true" >
+		<delete includeemptydirs="true" quiet="true">
 			<fileset dir="dist" includes="**/*" />
 		</delete>
 	</target>
@@ -27,12 +27,9 @@
 	</target>
 
 	<target name="jar" depends="compile">
-        <copy todir="dist/lib">
-            <fileset dir="lib" />
-        </copy>
-        <copy todir="dist/etc">
-            <fileset dir="etc" />
-        </copy>
+		<copy todir="dist/lib">
+			<fileset dir="lib" />
+		</copy>
 		<path id="cp.runtime">
 			<fileset dir="dist/">
 				<include name="**/*.jar" />
@@ -45,9 +42,6 @@
 			<fileset dir="src/classes">
 				<include name="**/**" />
 			</fileset>
-			<fileset dir="src/com/rossallenbell/avatr/webapp">
-				<include name="**/**" />
-			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="com.rossallenbell.avatr.AvatrServer" />
 				<attribute name="Class-Path" value="${manifest_cp}" />
@@ -55,6 +49,23 @@
 		</jar>
 	</target>
 
-	<target name="all" depends="clean,jar" />
+	<target name="zip" depends="jar">
+		<copy todir="dist/etc">
+			<fileset dir="etc" />
+		</copy>
+		<copy todir="dist/webapp">
+			<fileset dir="webapp" />
+		</copy>
+		<copy todir="dist">
+			<fileset dir="util" />
+		</copy>
+		<copy todir="zipped/avatr">
+			<fileset dir="dist" />
+		</copy>
+		<zip destfile="dist/avatr.zip" basedir="zipped" />
+		<delete dir="zipped" quiet="true" />
+	</target>
+
+	<target name="all" depends="clean,zip" />
 
 </project>

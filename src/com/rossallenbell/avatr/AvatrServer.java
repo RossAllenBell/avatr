@@ -19,7 +19,7 @@ public class AvatrServer {
 		Server server = new Server(Integer.parseInt(PROPERTIES.getProperty("port", "8080")));
 
 		ServletContextHandler handler = new ServletContextHandler();
-		handler.setResourceBase("src/com/rossallenbell/avatr/webapp");
+		handler.setResourceBase("webapp");
 
 		DefaultServlet defaultServlet = new DefaultServlet();
 		ServletHolder defaultServletHolder = new ServletHolder(defaultServlet);
