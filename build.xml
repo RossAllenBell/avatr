@@ -4,23 +4,23 @@
 		<fileset dir="lib">
 			<include name="**/*.jar" />
 		</fileset>
-		<pathelement path="src/classes" />
+		<pathelement path="build/classes" />
 	</path>
 
 	<target name="clean">
-		<delete dir="build" quiet="true" />
+		<delete dir="build" quiet="true" includeemptydirs="true" />
 		<delete includeemptydirs="true" quiet="true">
 			<fileset dir="dist" includes="**/*" />
 		</delete>
 	</target>
 
 	<target name="prepare">
-		<mkdir dir="src/classes" />
+		<mkdir dir="build/classes" />
 		<mkdir dir="dist" />
 	</target>
 
 	<target name="compile" depends="prepare">
-		<javac srcdir="src" destdir="src/classes" includes="**/*.java" includeantruntime="false">
+		<javac srcdir="src" destdir="build/classes" includes="**/*.java" includeantruntime="false">
 			<classpath refid="compile.classpath" />
 			<compilerarg value="-Xlint" />
 		</javac>
@@ -39,7 +39,7 @@
 			<classpath refid="cp.runtime" />
 		</manifestclasspath>
 		<jar jarfile="dist/avatr.jar">
-			<fileset dir="src/classes">
+			<fileset dir="build/classes">
 				<include name="**/**" />
 			</fileset>
 			<manifest>

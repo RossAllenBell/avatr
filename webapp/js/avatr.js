@@ -54,6 +54,7 @@ function Avatr() {
     document.body.style.padding = 0;
     document.body.style.overflow = 'hidden';
     
+    //var wsURL = document.location.toString().replace('http://', 'ws://').replace('https://', 'wss://') + 'ws';
     var wsURL = document.location.toString().replace('http://', 'ws://').replace('https://', 'wss://') + 'ws';
     console.info('Creating WS to: ' + wsURL);
     var webSocket = new WebSocket(wsURL);
