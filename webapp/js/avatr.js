@@ -53,14 +53,23 @@ function Avatr() {
     document.body.style.margin = 0;
     document.body.style.padding = 0;
     document.body.style.overflow = 'hidden';
-    
-    //var wsURL = document.location.toString().replace('http://', 'ws://').replace('https://', 'wss://') + 'ws';
+
     var wsURL = document.location.toString().replace('http://', 'ws://').replace('https://', 'wss://') + 'ws';
     console.info('Creating WS to: ' + wsURL);
     var webSocket = new WebSocket(wsURL);
     
     webSocket.onopen = function() {
         console.info('Connected.');
+        
+        var emailAddress;
+        do {
+            emailAddress = prompt("Please enter your e-mail address:");
+        }
+        while(emailAddress.length < 5);
+        webSocket.send(JSON.stringify({
+            'messageType' : 'PlayerIdentification',
+            'emailAddress' : emailAddress
+        }));
     };
     
     webSocket.onclose = function(message) {
@@ -74,28 +83,28 @@ function Avatr() {
         
         if (messageType === 'PlayerJoined') {
             for ( var i in players) {
-                if (players[i].userId === data.player.userId) {
-                    console.error('Player already in game state: ' + data.player.userId);
+                if (players[i].emailAddress === data.player.emailAddress) {
+                    console.error('Player already in game state: ' + data.player.emailAddress);
                     return;
                 }
             }
             players.push(data.player);
         } else if (messageType === 'PlayerLocationUpdate') {
             for ( var i in players) {
-                if (players[i].userId === data.player.userId) {
+                if (players[i].emailAddress === data.player.emailAddress) {
                     players[i] = data.player;
                     return;
                 }
             }
-            console.error('Player not in game state: ' + data.player.userId);
+            console.error('Player not in game state: ' + data.player.emailAddress);
         } else if (messageType === 'PlayerQuit') {
             for ( var i in players) {
-                if (players[i].userId === data.player.userId) {
+                if (players[i].emailAddress === data.player.emailAddress) {
                     players.splice(i, 1);
                     return;
                 }
             }
-            console.error('Player not in game state: ' + data.player.userId);
+            console.error('Player not in game state: ' + data.player.emailAddress);
         } else {
             console.error('Unknown messageType: ' + messageType);
         }

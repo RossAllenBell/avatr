@@ -3,23 +3,20 @@ package com.rossallenbell.avatr.session;
 import org.eclipse.jetty.websocket.WebSocket;
 
 import com.rossallenbell.avatr.AvatrWebSocketServlet;
+import com.rossallenbell.avatr.dao.PlayerDAO;
 import com.rossallenbell.avatr.domain.Player;
 import com.rossallenbell.avatr.json.AvatrJsonMessage;
+import com.rossallenbell.avatr.json.incoming.PlayerIdentificationMessage;
 import com.rossallenbell.avatr.json.incoming.PlayerMovedMessage;
 
 public class WebSocketSession implements WebSocket.OnTextMessage {
     
     private final AvatrWebSocketServlet wsServlet;
     private Connection connection;
-    private final String userId;
-    private int x, y;
+    private Player player;
     
-    public WebSocketSession(AvatrWebSocketServlet awss, String userId) {
+    public WebSocketSession(AvatrWebSocketServlet awss) {
         this.wsServlet = awss;
-        this.userId = userId;
-        //place the player in a random spot on the scene
-        this.x = (int) Math.round(Math.random() * 1600);
-        this.y = (int) Math.round(Math.random() * 900);
     }
     
     public Connection getConnection() {
@@ -32,11 +29,13 @@ public class WebSocketSession implements WebSocket.OnTextMessage {
     
     @Override
     public void onClose(int closedCode, String message) {
+        System.out.println("WS session closed");
         wsServlet.removeSession(this);
     }
     
     @Override
     public void onOpen(Connection connection) {
+        System.out.println("WS session opened");
         this.setConnection(connection);
         wsServlet.addSession(this);
     }
@@ -53,16 +52,31 @@ public class WebSocketSession implements WebSocket.OnTextMessage {
         
         if (message.getClass() == PlayerMovedMessage.class) {
             onPlayerMoved((PlayerMovedMessage) message);
+        } else if (message.getClass() == PlayerIdentificationMessage.class) {
+            onPlayerIdentified((PlayerIdentificationMessage) message);
         }
     }
     
     public Player getPlayer() {
-        return new Player(userId, x, y);
+        return player;
     }
     
     private void onPlayerMoved(PlayerMovedMessage message) {
-        this.x = message.x;
-        this.y = message.y;
-        wsServlet.updateLocation(this.getPlayer());
+        player.setX(message.x);
+        player.setY(message.y);
+        wsServlet.updateLocation(player);
+        new PlayerDAO().persistPlayer(player);
+    }
+    
+    private void onPlayerIdentified(PlayerIdentificationMessage message){
+        player = new PlayerDAO().loadPlayer(message.emailAddress);
+        if(player == null){
+            System.out.println("Player load failed");
+            this.connection.close();
+            return;
+        }
+        wsServlet.sessionIdentified(this);
+        wsServlet.updateLocation(player);
+        System.out.println("Player identified: " + player.getEmailAddress());
     }
 }

@@ -2,22 +2,18 @@ package com.rossallenbell.avatr.domain;
 
 public class Player {
     
-    private String userId;
+    private final String emailAddress;
     private int x;
     private int y;
     
-    public Player(String userId, int x, int y){
-        this.setUserId(userId);
+    public Player(String emailAddress, int x, int y){
+        this.emailAddress = emailAddress;
         this.setX(x);
         this.setY(y);
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
     public int getX() {

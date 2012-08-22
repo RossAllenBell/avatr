@@ -22,10 +22,9 @@ public class AvatrWebSocketServlet extends WebSocketServlet {
     
     private final Set<WebSocketSession> members = new CopyOnWriteArraySet<WebSocketSession>();
     
-    private static int userId = 1;
-    
     public WebSocket doWebSocketConnect(HttpServletRequest request, String protocol) {
-        return new WebSocketSession(this, userId++ + "");
+        System.out.println("WS connection received");
+        return new WebSocketSession(this);
     }
     
     private void messageMembers(AvatrJsonMessage message) {
@@ -47,12 +46,20 @@ public class AvatrWebSocketServlet extends WebSocketServlet {
             messageMember(wsSession, new PlayerJoinedMessage(member.getPlayer()));
         }
         this.members.add(wsSession);
-        messageMembers(new PlayerJoinedMessage(wsSession.getPlayer()));
+    }
+    
+    public void sessionIdentified(WebSocketSession wsSession){
+        for (WebSocketSession member : members) {
+            messageMember(member, new PlayerJoinedMessage(wsSession.getPlayer()));
+        }
     }
     
     public void removeSession(WebSocketSession wsSession) {
+        System.out.println("Removing session: " + wsSession.getPlayer().getEmailAddress());
         this.members.remove(wsSession);
-        messageMembers(new PlayerQuitMessage(wsSession.getPlayer()));
+        if(wsSession.getPlayer() != null){
+            messageMembers(new PlayerQuitMessage(wsSession.getPlayer()));
+        }
     }
     
     public void updateLocation(Player player) {
